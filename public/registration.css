@@ -1,0 +1,54 @@
+body {
+  margin: 0;
+  top: 0;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  background-color: #e6e4e4; }
+
+*,
+*:before,
+*:after {
+  box-sizing: border-box;
+  font-family: "Inter", serif; }
+
+.header {
+  margin-top: 20px; }
+
+.main {
+  margin-top: 20px; }
+  .main__form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 10px; }
+    .main__form-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 4px; }
+    .main__form-input {
+      width: 250px;
+      height: 40px;
+      border: 1px solid black;
+      border-radius: 10px;
+      font-size: 16px;
+      padding: 0 6px; }
+    .main__form-submit {
+      width: 200px;
+      height: 40px;
+      border-radius: 10px;
+      border: 1px solid black;
+      margin-top: 20px;
+      background-color: #3bc22c;
+      font-size: 18px; }
+      .main__form-submit:hover {
+        background-color: #3a8c31; }
+      .main__form-submit:active {
+        background-color: #3a7a33; }
+    .main__form-error {
+      color: red; }
+
+/*# sourceMappingURL=registration.css.map */

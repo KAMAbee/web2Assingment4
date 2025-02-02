@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reset Password</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="reset.css">
+</head>
+
+<body>
+  <header class="header">
+    <h1 class="header__title">
+      Reset Password
+    </h1>
+  </header>
+
+  <main class="main">
+    <form action="/reset" method="POST" class="main__form">
+      <div class="main__form-wrap">
+        <label for="email" class="main__form-label">Email</label>
+        <input type="text" id="email" class="main__form-input" name="email" placeholder="Email" required>
+      </div>
+
+      <div class="main__form-wrap">
+        <label for="password" class="main__form-label">New password</label>
+        <input type="password" id="password" class="main__form-input" name="password" placeholder="New Password" minlength="3" required>
+      </div>
+
+      <% if (message) { %>
+      <div class="main__form-error">
+        <%= message %>
+      </div>
+      <% } %>
+
+      <button type="submit" class="main__form-submit">Reset Password</button>
+
+    </form>
+  </main>
+
+  <footer class="footer">
+    <p class="footer__text">No account? <a href="/registration" class="footer__link">Register</a></p>
+  </footer>
+</body>
+
+</html>

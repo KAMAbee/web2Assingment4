@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registration</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="registration.css">
+</head>
+
+<body>
+  <header class="header">
+    <h1 class="header__title">Registration</h1>
+  </header>
+
+  <main class="main">
+    <form action="/registration" method="POST" class="main__form">
+      <div class="main__form-wrap">
+        <label for="username" class="main__form-label">Username</label>
+        <input type="text" id="username" class="main__form-input" name="username" placeholder="Username" required>
+      </div>
+      <div class="main__form-wrap">
+        <label for="email" class="main__form-label">Email</label>
+        <input type="email" id="email" class="main__form-input" name="email" placeholder="Email" required>
+      </div>
+
+      <div class="main__form-wrap">
+        <label for="password" class="main__form-label">Password</label>
+        <input type="password" id="password" class="main__form-input" name="password" placeholder="Password" minlength="3" required>
+      </div>
+
+      <% if (message) { %>
+      <div class="main__form-error">
+        <%= message %>
+      </div>
+      <% } %>
+
+      <button type="submit" class="main__form-submit">Register</button>
+    </form>
+  </main>
+
+  <footer class="footer">
+    <p class="footer__text">Already have an account? <a href="/login" class="footer__link">Login</a></p>
+  </footer>
+
+</body>
+
+</html>

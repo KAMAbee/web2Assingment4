@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Profile</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="profile.css">
+</head>
+
+<body>
+  <header class="header">
+    <div class="header__hello">
+      Hello, <span class="header__hello-username"><%= user.username %></span>, here you can edit or delete your profile!
+    </div>
+    <div class="header__wrap">
+      <h1 class="header__title">
+        Profile
+      </h1>
+
+      <a href="/logout" class="header__logout-link">
+        <button class="header__logout">
+          Log Out
+        </button>
+      </a>
+    </div>
+  </header>
+
+  <main class="main">
+    <form class="main__form-avatar" action="/update_avatar" method="POST" enctype="multipart/form-data">
+      <img class="main__form-avatar-img" src="<%= user.img ? user.img : '/uploads/default.webp' %>" alt="Avatar">
+
+      <div class="main__form-avatar-wrap">
+        <input class="main__form-avatar-input" type="file" name="avatar" accept="image/*">
+        <button class="main__form-avatar-submit" type="submit">Upload Avatar</button>
+      </div>
+    </form>
+
+    <form action="/update_user" method="POST" class="main__form">
+
+      <div class="main__form-wrap">
+        <label for="username" class="main__form-label">Username</label>
+        <input type="text" id="username" class="main__form-input" name="username" placeholder="Username" value="<%= user.username %>" required readonly>
+      </div>
+
+      <div class="main__form-wrap">
+        <label for="email" class="main__form-label">Email</label>
+        <input type="email" id="email" class="main__form-input" name="email" placeholder="Email" value="<%= user.email %>" required readonly>
+      </div>
+
+      <div class="main__form-wrap">
+        <label for="password" class="main__form-label">Password (optional)</label>
+        <input type="password" id="password" class="main__form-input" name="password" placeholder="Password (optional)" minlength="3" readonly>
+      </div>
+
+      <% if (message) { %>
+      <div class="main__form-error">
+        <%= message %>
+      </div>
+      <% } %>
+
+      <div class="main__form-functions">
+        <button type="button" class="main__form-functions-cancel">Cancel</button>
+        <button type="submit" class="main__form-functions-save">Save</button>
+      </div>
+
+      <button type="button" class="main__form-edit">Edit</button>
+
+    </form>
+
+    <form action="/delete_user" method="POST" class="main__form-delete">
+      <button type="submit" class="main__form-delete-btn">Delete Profile</button>
+    </form>
+  </main>
+
+  <script>
+    const editBtn = document.querySelector(".main__form-edit")
+    const cancelBtn = document.querySelector(".main__form-functions-cancel")
+    const saveBtn = document.querySelector(".main__form-functions-save")
+    const inputs = document.querySelectorAll(".main__form-input")
+    const func = document.querySelector(".main__form-functions")
+    const oldData = {
+      username: document.getElementById('username').value,
+      email: document.getElementById('email').value,
+    };
+
+    editBtn.addEventListener("click", () => {
+      func.style.display = "block"
+      editBtn.style.display = "none"
+
+      inputs.forEach(input => {
+        input.removeAttribute("readonly")
+      });
+    })
+
+    cancelBtn.addEventListener("click", () => {
+      func.style.display = "none"
+      editBtn.style.display = "block"
+
+      document.getElementById('username').value = oldData.username
+      document.getElementById('email').value = oldData.email
+      document.getElementById('password').value = ''
+      inputs.forEach(input => {
+        input.setAttribute("readonly", "")
+      });
+    })
+
+    saveBtn.addEventListener("click", () => {
+      func.style.display = "none"
+      editBtn.style.display = "block"
+      inputs.forEach(input => {
+        input.setAttribute("readonly", "")
+      });
+    })
+  </script>
+</body>
+
+</html>
