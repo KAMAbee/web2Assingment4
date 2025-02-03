@@ -47,7 +47,9 @@ body {
       background-color: #747a79; }
     .header__logout-link {
       text-decoration: none; }
-
+.main{
+  margin-bottom: 30px;
+}
 .main__form {
   display: flex;
   justify-content: center;
