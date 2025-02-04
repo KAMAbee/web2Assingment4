@@ -63,6 +63,9 @@ const User = mongoose.model('User', userSchema);
 
 // Registration
 app.get('/registration', (req, res) => {
+    if (req.session.user) {
+        return res.redirect('/profile');
+    }
     res.render('registration', { message: null });
 });
 
@@ -93,6 +96,9 @@ app.post('/registration', async (req, res) => {
 
 // Login
 app.get('/login', (req, res) => {
+    if (req.session.user) {
+        return res.redirect('/profile');
+    }
     res.render('login', { message: null });
 });
 
@@ -226,7 +232,10 @@ const transporter = nodemailer.createTransport({
 
 // Send Verification code
 app.get('/reset', (req, res) => {
-    res.render('reset', { message: null, messageType: null});
+    if (req.session.user) {
+        return res.redirect('/profile');
+    }
+    res.render('reset', { message: null, messageType: null });
 });
 
 app.post('/reset', async (req, res) => {
@@ -250,12 +259,12 @@ app.post('/reset', async (req, res) => {
         req.session.resetCode = resetCode;
         req.session.resetEmail = email;
 
-        transporter.sendMail(mailOptions, err => {
-            if (err) {
-                return res.render('reset', { message: 'Error sending email', messageType: 'error' });
-            }
+        try {
+            await transporter.sendMail(mailOptions);
             return res.render('reset', { message: `Reset code sent to ${email}`, messageType: 'success' });
-        })
+        } catch (err) {
+            return res.render('reset', { message: 'Error sending email', messageType: 'error' });
+        }
     } catch (err) {
         res.status(500).send('Error')
     }
