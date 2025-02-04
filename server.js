@@ -71,7 +71,7 @@ app.get('/registration', (req, res) => {
 
 app.post('/registration', async (req, res) => {
     try {
-        const { username, email, password } = req.body;
+        const { username, email, password, repeatPassword } = req.body;
 
         const existingUsername = await User.findOne({ username });
         if (existingUsername) {
@@ -81,6 +81,10 @@ app.post('/registration', async (req, res) => {
         const existingEmail = await User.findOne({ email });
         if (existingEmail) {
             return res.render('registration', { message: 'User with this email is already exists' });
+        }
+
+        if(password !== repeatPassword){
+            return res.render('registration', { message: 'Passwords are not same' });
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);

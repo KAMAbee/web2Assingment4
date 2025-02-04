@@ -33,6 +33,11 @@
         <input type="password" id="password" class="main__form-input" name="password" placeholder="Password" minlength="3" required>
       </div>
 
+      <div class="main__form-wrap">
+        <label for="repeatPassword" class="main__form-label">Repeat new password</label>
+        <input type="password" id="repeatPassword" class="main__form-input" name="repeatPassword" placeholder="Repeat new password" required>
+      </div>
+
       <% if (message) { %>
       <div class="main__form-error">
         <%= message %>
@@ -46,7 +51,5 @@
   <footer class="footer">
     <p class="footer__text">Already have an account? <a href="/login" class="footer__link">Login</a></p>
   </footer>
-
 </body>
-
 </html>
