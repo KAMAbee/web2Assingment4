@@ -23,22 +23,25 @@
     <form action="/reset" method="POST" class="main__form">
       <div class="main__form-wrap">
         <label for="email" class="main__form-label">Email</label>
-        <input type="text" id="email" class="main__form-input" name="email" placeholder="Email" required>
+        <input type="email" id="email" class="main__form-input" name="email" placeholder="Email" required>
       </div>
 
+      <button type="submit" class="main__form-submit">Send reset code</button>
+    </form>
+
+    <% if (message) { %>
+    <div class="main__form-<%= messageType === 'error' ? 'error' : 'success' %>">
+      <%= message %>
+    </div>
+    <% } %>
+
+    <form action="/resetcode" method="POST" class="main__form">
       <div class="main__form-wrap">
-        <label for="password" class="main__form-label">New password</label>
-        <input type="password" id="password" class="main__form-input" name="password" placeholder="New Password" minlength="3" required>
+        <label for="resetcode" class="main__form-label">Reset Code</label>
+        <input type="text" id="resetcode" class="main__form-input" name="resetcode" placeholder="Reset Code" required>
       </div>
 
-      <% if (message) { %>
-      <div class="main__form-error">
-        <%= message %>
-      </div>
-      <% } %>
-
-      <button type="submit" class="main__form-submit">Reset Password</button>
-
+      <button type="submit" class="main__form-submit">Confirm</button>
     </form>
   </main>
 

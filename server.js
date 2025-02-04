@@ -7,6 +7,7 @@ require('dotenv').config();
 const bcrypt = require('bcryptjs');
 const session = require('express-session');
 var multer = require('multer');
+const nodemailer = require("nodemailer");
 
 const app = express();
 app.use(bodyParser.json());
@@ -136,7 +137,7 @@ app.post('/update_user', isAuthenticated, async (req, res) => {
         if (existingEmail) {
             return res.render('profile', { user: req.session.user, message: 'User with this email is already exists' });
         }
-        
+
         const updateData = { username, email };
         if (password) {
             updateData.password = await bcrypt.hash(password, 10);
@@ -144,7 +145,7 @@ app.post('/update_user', isAuthenticated, async (req, res) => {
 
         const updatedUser = await User.findByIdAndUpdate(userId, updateData, { new: true });
 
-        req.session.user = updatedUser; 
+        req.session.user = updatedUser;
 
         res.redirect('/profile');
     } catch (err) {
@@ -156,7 +157,7 @@ app.post('/update_user', isAuthenticated, async (req, res) => {
 app.post('/delete_user', isAuthenticated, async (req, res) => {
     try {
         const userId = req.session.user._id;
-        
+
         await User.findByIdAndDelete(userId);
 
         req.session.destroy(err => {
@@ -212,30 +213,97 @@ app.get('/logout', (req, res) => {
 });
 
 
-// Reset password
+// Email sender
+const transporter = nodemailer.createTransport({
+    host: "smtp.office365.com",
+    port: 587,
+    secure: false,
+    auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASSWORD,
+    },
+});
+
+// Send Verification code
 app.get('/reset', (req, res) => {
-    res.render('reset', { message: null });
+    res.render('reset', { message: null, messageType: null});
 });
 
 app.post('/reset', async (req, res) => {
     try {
-        const { email, password } = req.body;
+        const { email } = req.body;
 
         const user = await User.findOne({ email });
         if (!user) {
-            return res.render('reset', { message: 'User not found' });
+            return res.render('reset', { message: 'User not found', messageType: 'error' });
         }
 
-        const newHashedPassword = await bcrypt.hash(password, 10);
+        let resetCode = Math.floor(Math.random() * (999999 - 100000 + 1)) + 100000;
 
-        await User.findByIdAndUpdate(user._id, { password: newHashedPassword }, { new: true });
+        const mailOptions = {
+            from: "230047@astanait.edu.kz",
+            to: email,
+            subject: "Reset code",
+            text: `Reset code: ${resetCode}`,
+        }
 
-        res.redirect('/login');
+        req.session.resetCode = resetCode;
+        req.session.resetEmail = email;
+
+        transporter.sendMail(mailOptions, err => {
+            if (err) {
+                return res.render('reset', { message: 'Error sending email', messageType: 'error' });
+            }
+            return res.render('reset', { message: `Reset code sent to ${email}`, messageType: 'success' });
+        })
+    } catch (err) {
+        res.status(500).send('Error')
+    }
+});
+
+
+app.post('/resetcode', async (req, res) => {
+    try {
+        const { resetcode } = req.body;
+
+        if (!req.session.resetCode || resetcode != req.session.resetCode) {
+            return res.render('reset', { message: 'Invalid reset code', messageType: 'error' });
+        }
+        req.session.resetCode = null
+
+        res.redirect('/newpassword');
     } catch (err) {
         res.status(500).send('Error updating password')
     }
 });
 
+// Reset Password
+app.get('/newpassword', (req, res) => {
+    if (!req.session.resetEmail) {
+        return res.redirect('/reset');
+    }
+    res.render('newpassword', { message: null })
+});
+
+app.post('/newpassword', async (req, res) => {
+    try {
+        const { password, confirmPassword } = req.body;
+
+        if (!req.session.resetEmail) {
+            return res.redirect('/reset');
+        }
+
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        await User.updateOne({ email: req.session.resetEmail }, { password: hashedPassword });
+
+        req.session.resetEmail = null;
+
+        res.redirect('/login');
+    } catch (err) {
+        res.status(500).send('Server error');
+    }
+});
 
 // All users in json 
 app.get('/users', async (req, res) => {
