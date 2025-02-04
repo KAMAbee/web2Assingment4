@@ -296,10 +296,14 @@ app.get('/newpassword', (req, res) => {
 
 app.post('/newpassword', async (req, res) => {
     try {
-        const { password, confirmPassword } = req.body;
+        const { password, repeatPassword } = req.body;
 
         if (!req.session.resetEmail) {
             return res.redirect('/reset');
+        }
+
+        if (password !== repeatPassword) {
+            return res.render('newpassword', { message: 'Passwords are not same' });
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);
